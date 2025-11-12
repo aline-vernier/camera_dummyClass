@@ -6,6 +6,6 @@ import qdarkstyle
 if __name__ == "__main__":
      appli = QApplication(sys.argv)
      appli.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt6'))
-     e = CAMERA(cam='dummy', scan=False, motRSAI = False, spectro=True)
+     e = CAMERA(cam='dummy', scan=False, motRSAI = False)
      e.show()
      appli.exec_()

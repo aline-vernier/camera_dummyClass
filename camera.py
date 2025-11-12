@@ -250,7 +250,24 @@ class CAMERA(QWidget):
                 self.cameraType = ""
                 self.camID = ""
                 self.nbcam = 'camDefault'
-                pass 
+                pass
+
+        elif self.cameraType == "dummy":
+            try :
+                import dummyCam
+                self.CAM = dummyCam.DUMMYCAM(cam=self.nbcam,conf=self.conf,**self.kwds)
+                self.CAM.openCamByID(self.camID)
+                self.isConnected = self.CAM.isConnected
+            except:
+                print("Dummy cam not loaded")
+                self.isconnected = False
+                print('No camera chosen')
+                self.ccdName = "no camera"
+                self.cameraType = ""
+                self.camID = ""
+                self.nbcam = 'camDefault'
+                pass
+
         else:
             print('no camera')
             self.isConnected = False
@@ -258,6 +275,8 @@ class CAMERA(QWidget):
             self.cameraType = ""
             self.camID = ""
             self.nbcam = 'camDefault'
+
+
             
     def openCam(self):
         '''open a camera with different way  
@@ -439,7 +458,7 @@ class CAMERA(QWidget):
         '''
         if self.isConnected is True : # if camera is connected we address min and max value  and value to the shutter and gain box
            
-            if self.CAM.camParameter["expMax"] > 1500 : # we limit exposure time at 1500ms
+            if self.CAM.camParameter["expMax"] > 1500 : # we limit exposure time at 1500ms #☻ Rajout de *1000 car passage au µs
                 self.hSliderShutter.setMaximum(1500)
                 self.shutterBox.setMaximum(1500)
             else :
@@ -612,10 +631,10 @@ class CAMERA(QWidget):
             
             if self.light is False :  # light option : not all the option af visu 
                 from visu import SEE
-                self.visualisation = SEE(parent=self,name=self.nbcam,spectro=False,**self.kwds) ## Widget for visualisation and tools  self.confVisu permet d'avoir plusieurs camera et donc plusieurs fichier ini de visualisation
+                self.visualisation = SEE(parent=self,name=self.nbcam,**self.kwds) ## Widget for visualisation and tools  self.confVisu permet d'avoir plusieurs camera et donc plusieurs fichier ini de visualisation
             else:
                 from visu import SEELIGHT
-                self.visualisation = SEELIGHT(parent=self, name=self.nbcam, spectro=False, **self.kwds)
+                self.visualisation = SEELIGHT(parent=self, name=self.nbcam, **self.kwds)
                     
             self.setWindowTitle(self.cameraType+"   " + self.ccdName+ '     v. '+ self.version+"   " +'Visu v. '+ self.visualisation.version)   
             self.dockTrig.setTitleBarWidget(QWidget())        
@@ -869,6 +888,6 @@ if __name__ == "__main__":
     appli = QApplication(sys.argv) 
     appli.setStyleSheet(qdarkstyle.load_stylesheet(qt_api='pyqt6'))
     path = '/home/gautier/Documents/confCamera.ini'
-    e = CAMERA(cam='choose',motRSAI=False,aff='right' )#,confpath=path  )
+    e = CAMERA(cam='TacheFocale',scan=False,motRSAI = False)
     e.show()
     sys.exit(appli.exec())   
